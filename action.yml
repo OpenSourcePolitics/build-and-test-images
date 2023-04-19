@@ -53,6 +53,8 @@ runs:
         cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
         outputs: type=docker,compression=gzip
         tags: ${{ inputs.image_name }}:develop
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
     - name: Test build
       shell: bash
       run: |
@@ -64,4 +66,4 @@ runs:
           -p 3000:3000 \n
           --name decidim-app ${{ inputs.image_name }}:${{ inputs.tag }}
         docker exec decidim-app bundle exec rake db:create db:migrate
-        ./.github/test_build.sh
+        test_build.sh
