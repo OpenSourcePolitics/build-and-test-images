@@ -63,7 +63,7 @@ runs:
           -e DATABASE_USERNAME=${{inputs.database_username}} \
           -e DATABASE_PASSWORD=${{inputs.database_password}} \
           -e DATABASE_HOST=${{inputs.database_host}} \
-          -p 3000:3000 \n
+          -p 3000:3000 \
           --name decidim-app ${{ inputs.image_name }}:${{ inputs.tag }}
         docker exec decidim-app bundle exec rake db:create db:migrate
         test_build.sh
