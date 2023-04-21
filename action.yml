@@ -36,6 +36,7 @@ runs:
     - uses: OpenSourcePolitics/build-and-push-images-action@master
       with:
         registry: ${{ inputs.registry }}
+        namespace: ${{ inputs.namespace }}
         password: ${{ inputs.password }}
         username: ${{ inputs.username }}
         image_name: ${{ inputs.image_name }}
@@ -52,6 +53,6 @@ runs:
           -e DATABASE_PASSWORD=${{inputs.database_password}} \
           -e DATABASE_HOST=${{inputs.database_host}} \
           -p 3000:3000 \
-          --name decidim-app ${{ input.registry }}/${{ input.namespace })/${{ inputs.image_name }}:${{ inputs.tag }}
+          --name decidim-app ${{ inputs.registry }}/${{ inputs.namespace }}/${{ inputs.image_name }}:${{ inputs.tag }}
         docker exec decidim-app bundle exec rake db:create db:migrate
         test_build.sh
