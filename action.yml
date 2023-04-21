@@ -33,6 +33,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: Clean tag
+      uses: OpenSourcePolitics/clean-tag-action@master
+      id: clean_tag
+      with:
+        tag: ${{ inputs.tag }}
     - uses: OpenSourcePolitics/build-and-push-images-action@master
       with:
         registry: ${{ inputs.registry }}
@@ -40,19 +47,11 @@ runs:
         password: ${{ inputs.password }}
         username: ${{ inputs.username }}
         image_name: ${{ inputs.image_name }}
-        tag: ${{ inputs.tag }}
+        tag: ${{ steps.clean_tag.outputs.tag }}
         push: false
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash
     - name: Test build
       shell: bash
       run: |
-        docker run --rm -d
-          --add-host=host.docker.internal:host-gateway \
-          -e DATABASE_USERNAME=${{inputs.database_username}} \
-          -e DATABASE_PASSWORD=${{inputs.database_password}} \
-          -e DATABASE_HOST=${{inputs.database_host}} \
-          -p 3000:3000 \
-          --name decidim-app ${{ inputs.registry }}/${{ inputs.namespace }}/${{ inputs.image_name }}:${{ inputs.tag }}
+        docker run --rm -d --add-host=host.docker.internal:host-gateway -e DATABASE_USERNAME=${{inputs.database_username}} -e DATABASE_PASSWORD=${{inputs.database_password}} -e DATABASE_HOST=${{inputs.database_host}} -p 3000:3000 --name decidim-app ${{ inputs.registry }}/${{ inputs.namespace }}/${{ inputs.image_name }}:${{ steps.clean_tag.outputs.tag }}
         docker exec decidim-app bundle exec rake db:create db:migrate
         test_build.sh
