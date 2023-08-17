@@ -49,6 +49,7 @@ runs:
         image_name: ${{ inputs.image_name }}
         tag: ${{ steps.clean_tag.outputs.tag }}
         push: false
+    - uses: lhotari/action-upterm@v1
     - name: Test build
       shell: bash
       run: |
