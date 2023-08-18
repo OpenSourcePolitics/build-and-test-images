@@ -29,6 +29,10 @@ inputs:
   database_host:
     description: 'Database host'
     required: true
+  push:
+    description: 'Push image to registry'
+    required: true
+    default: "true"
 
 runs:
   using: "composite"
@@ -55,3 +59,12 @@ runs:
         docker run --rm -d --add-host=host.docker.internal:host-gateway -e DATABASE_USERNAME=${{inputs.database_username}} -e DATABASE_PASSWORD=${{inputs.database_password}} -e DATABASE_HOST=${{inputs.database_host}} -p 3000:3000 --name decidim-app ${{ inputs.registry }}/${{ inputs.namespace }}/${{ inputs.image_name }}:${{ steps.clean_tag.outputs.tag }}
         docker exec decidim-app bundle exec rake db:create db:migrate
         test_build.sh
+    - uses: OpenSourcePolitics/build-and-push-images-action@master
+      with:
+        registry: ${{ inputs.registry }}
+        namespace: ${{ inputs.namespace }}
+        password: ${{ inputs.password }}
+        username: ${{ inputs.username }}
+        image_name: ${{ inputs.image_name }}
+        tag: ${{ steps.clean_tag.outputs.tag }}
+        push: ${{ inputs.push == 'true' }}
