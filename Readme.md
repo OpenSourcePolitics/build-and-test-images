@@ -33,6 +33,10 @@ Based on the [Build and push images action](https://github.com/OpenSourcePolitic
 - database_host:
   - description: 'Database host'
   - required: true
+- push:
+  - description: 'Push image to registry'
+  - required: true
+  - default: "true"
 
 ## Usage
 
@@ -49,5 +53,6 @@ Based on the [Build and push images action](https://github.com/OpenSourcePolitic
     database_username: ${{ secrets.DATABASE_USERNAME }}
     database_password: ${{ secrets.DATABASE_PASSWORD }}
     database_host: ${{ secrets.DATABASE_HOST }}
+    push: "true"
 ```
 
