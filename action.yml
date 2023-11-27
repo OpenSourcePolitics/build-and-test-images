@@ -57,5 +57,5 @@ runs:
       shell: bash
       run: |
         docker run --rm -d --add-host=host.docker.internal:host-gateway -e DATABASE_USERNAME=${{inputs.database_username}} -e DATABASE_PASSWORD=${{inputs.database_password}} -e DATABASE_HOST=${{inputs.database_host}} -p 3000:3000 --name decidim-app ${{ inputs.registry }}/${{ inputs.namespace }}/${{ inputs.image_name }}:${{ steps.clean_tag.outputs.tag }}
-        docker exec decidim-app bundle exec rake db:create decidim_app:k8s:upgrade
+        docker exec decidim-app bundle exec rake db:create db:migrate
         test_build.sh
